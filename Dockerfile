@@ -10,8 +10,8 @@ RUN apk add --no-cache --virtual .build-deps build-base linux-headers \
 
 COPY .env .
 
-COPY template.png . 
+COPY twitter_banner.jpg . 
 
 COPY main.py . 
 
-CMD ["python", "main.py"]
+CMD ["python", "main.py", "--minutes=10"]

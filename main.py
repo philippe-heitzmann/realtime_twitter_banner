@@ -3,6 +3,7 @@ from os import environ as env
 import io
 import time
 
+import click
 import dotenv
 import tweepy
 from PIL import Image, ImageDraw
@@ -16,7 +17,6 @@ class ProfileBanner:
         self.client = self.__login()
         self.FIRST_IMAGE_COORDS = (600, 400)
         self.IMAGE_DIA = 75
-
         self.follower_len = len(self.client.get_followers(user_id=env.get("USER_ID")))
 
     def __login(self):
@@ -24,6 +24,7 @@ class ProfileBanner:
         auth = tweepy.OAuthHandler(env["CONSUMER_KEY"], env["CONSUMER_SECRET"])
         auth.set_access_token(env["ACCESS_TOKEN"], env["ACCESS_TOKEN_SECRET"])
         api = tweepy.API(auth)
+        print(api)
         return api
 
     def __get_latest_followers_images(self) -> list[io.BytesIO]:
@@ -38,11 +39,11 @@ class ProfileBanner:
             images.append(io.BytesIO(response.content))
         return images
 
-    def __image_factory(self, savepath: str = None) -> Image:
+    def __image_factory(self, filename = "twitter_banner.jpg", savepath: str = None) -> Image:
         """
         Pastes the image onto the template
         """
-        template = Image.open("template.png")
+        template = Image.open(filename)
         images = self.__get_latest_followers_images()
         for i, image in enumerate(images):
             try:
@@ -87,6 +88,11 @@ class ProfileBanner:
             self.__update_banner()
             time.sleep(60*minutes)
 
-if __name__ == "__main__":
+@click.command()
+@click.option('--minutes', default=5, help='Repeat every x minutes')
+def main(minutes):
     banner = ProfileBanner()
-    banner.update_every_few_minutes(30)
+    banner.update_every_few_minutes(minutes)
+
+if __name__ == "__main__":
+    main()
