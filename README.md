@@ -1,4 +1,4 @@
-<div align="center">
+<!-- <div align="center"> -->
 <h1 align="center">Auto twitter banner</h1>
 
 <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-blue.svg" /><br>
